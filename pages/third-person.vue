@@ -5,7 +5,6 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { onMounted, ref } from 'vue';
 
 const container3D = ref(null);
-const showCode = ref(false);
 
 onMounted(() => {
     let object, mixer, walkAction, shutdownAction, CycleBackAction, jumpAction;
@@ -191,6 +190,12 @@ onMounted(() => {
     <div ref="container3D">
         <div class="absolute bottom-5 right-5">
             <NuxtLink to="https://github.com/wildy13/three.js/blob/master/pages/third-person.vue">View Code</NuxtLink>
+        </div>
+        <div class="absolute bottom-4 w-full text-center">
+            Walk = W
+            Back = S
+            Left = D
+            Right = E
         </div>
     </div>
 </template>

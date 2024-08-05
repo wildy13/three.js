@@ -1,0 +1,11 @@
+Model Information:
+* title:	Bipedal Mech
+* source:	https://sketchfab.com/3d-models/bipedal-mech-9271b28473454a53bf037963a2878338
+* author:	nabonilo (https://sketchfab.com/nabonilo)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Bipedal Mech" (https://sketchfab.com/3d-models/bipedal-mech-9271b28473454a53bf037963a2878338) by nabonilo (https://sketchfab.com/nabonilo) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
