@@ -81,6 +81,7 @@ function init() {
     scene.add(reticle);
 
     window.addEventListener('resize', onWindowResize);
+    renderer.xr.getSession().addEventListener('end', onSessionEnd);
 }
 
 function onWindowResize() {
@@ -134,7 +135,7 @@ function _createSlideBar() {
     document.body.appendChild(button);
     button.innerHTML = "Click Me";
     button.className = "z-[99999] absolute top-5 left-5 text-slate-100 bg-blue-500 p-2 rounded";
-    
+
     button.addEventListener('click', function () {
         const card = document.querySelector('.card');
         if (card.classList.contains('-translate-x-full')) {
