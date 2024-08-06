@@ -136,7 +136,7 @@ function render(timestamp, frame) {
 </script>
 
 <template>
-    <div>
+    <div id="content">
         <div ref="container"></div>
         <div>
             <button id="myButton" class="z-[99999] absolute top-5 left-5 text-slate-100">Click Me</button>
