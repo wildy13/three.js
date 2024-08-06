@@ -85,6 +85,7 @@ function init() {
     scene.add(reticle);
 
     window.addEventListener('resize', onWindowResize);
+    
 }
 
 function onWindowResize() {
