@@ -23,6 +23,8 @@ onMounted(() => {
         arButton.addEventListener('click', () => {
             isAr.value = true;
         });
+    } else {
+        console.error("ARButton element not found");
     }
 });
 
@@ -49,7 +51,7 @@ function init() {
         domOverlay: { root: content.value }
     };
     document.body.appendChild(ARButton.createButton(renderer, options));
-
+    
     const loader = new GLTFLoader();
     loader.load(
         '/food/scene.gltf',
@@ -86,7 +88,6 @@ function init() {
     scene.add(reticle);
 
     window.addEventListener('resize', onWindowResize);
-
 }
 
 function onWindowResize() {
@@ -115,7 +116,9 @@ function render(timestamp, frame) {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
                 isAr.value = false;
-                button.value.style.display = "none";
+                if (button.value) {
+                    button.value.style.display = "none";
+                }
             });
 
             hitTestSourceRequested = true;
@@ -128,10 +131,16 @@ function render(timestamp, frame) {
                 const hit = hitTestResults[0];
                 reticle.visible = true;
                 reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
-                button.value.style.display = "block";
+                if (button.value) {
+                    button.value.style.display = "block";
+                    console.log("Button displayed");
+                }
             } else {
                 reticle.visible = false;
-                button.value.style.display = "none";
+                if (button.value) {
+                    button.value.style.display = "none";
+                    console.log("Button hidden");
+                }
             }
         }
     }
@@ -140,12 +149,11 @@ function render(timestamp, frame) {
 }
 </script>
 
-
 <template>
     <div ref="content">
         <div ref="container"></div>
         <div>
-            <button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100">Click Me</button>
+            <button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100 hidden">Click Me</button>
         </div>
     </div>
 </template>
