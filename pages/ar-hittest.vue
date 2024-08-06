@@ -2,10 +2,10 @@
 import { onMounted, ref } from 'vue';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { ARButton } from 'three/addons/webxr/ARButton.js';
-import { } from 'three/addons/libs/lil-gui.module.min.js';
 import * as THREE from 'three';
 
 const container = ref(null);
+const button = ref(null);
 let camera, scene, renderer;
 let controller;
 let reticle;
@@ -22,13 +22,11 @@ function init() {
     scene = new THREE.Scene();
 
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
-    camera.position.set(0, 5, 20)
+    camera.position.set(0, 5, 20);
 
     const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 3);
     light.position.set(0.5, 1, 0.25);
     scene.add(light);
-
-
 
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -36,12 +34,12 @@ function init() {
     renderer.xr.enabled = true;
     container.value.appendChild(renderer.domElement);
 
-    let options = {
+    // Set up ARButton with domOverlay
+    const options = {
         requiredFeatures: ['hit-test'],
-        optionalFeatures: ['dom-overlay']
-    }
-
-    options.domOverlay = { root: document.getElementById('content') }
+        optionalFeatures: ['dom-overlay'],
+        domOverlay: { root: button.value }
+    };
     document.body.appendChild(ARButton.createButton(renderer, options));
 
     const loader = new GLTFLoader();
@@ -60,10 +58,8 @@ function init() {
     function onSelect() {
         if (reticle.visible && object) {
             const placedObject = object.clone();
-            // reticle.matrix.decompose(placedObject.position, placedObject.quaternion, placedObject.scale);
-            // placedObject.scale.set(0.1, 0.1, 0.1);
             placedObject.position.setFromMatrixPosition(reticle.matrix);
-            placedObject.visible = true; // Ensure the cloned object is visible
+            placedObject.visible = true;
             placedObject.scale.set(0.1, 0.1, 0.1);
             scene.add(placedObject);
         }
@@ -90,7 +86,6 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-
 function animate() {
     renderer.setAnimationLoop(render);
 }
@@ -110,7 +105,7 @@ function render(timestamp, frame) {
             session.addEventListener('end', () => {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
-                document.getElementById("myButton").style.display = "none"
+                button.value.style.display = "none";
             });
 
             hitTestSourceRequested = true;
@@ -123,10 +118,10 @@ function render(timestamp, frame) {
                 const hit = hitTestResults[0];
                 reticle.visible = true;
                 reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
-                document.getElementById("myButton").style.display = "block"
+                button.value.style.display = "block";
             } else {
                 reticle.visible = false;
-                document.getElementById("myButton").style.display = "none"
+                button.value.style.display = "none";
             }
         }
     }
@@ -135,12 +130,12 @@ function render(timestamp, frame) {
 }
 </script>
 
+
 <template>
     <div id="content">
         <div ref="container"></div>
         <div>
-            <button id="myButton" class="z-[99999] absolute top-5 left-5 text-slate-100">Click Me</button>
+            <button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100">Click Me</button>
         </div>
     </div>
-
 </template>
