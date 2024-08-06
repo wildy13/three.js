@@ -179,7 +179,7 @@ function _createButton() {
 
     // Create card element
     const card = document.createElement('div');
-    card.className = 'card fixed top-0 left-0 w-1/5 h-full bg-slate-100 z-[99999] p-4 transform -translate-x-full transition-transform duration-300';
+    card.className = 'card fixed top-0 left-0 w-1/3 h-full bg-slate-100 z-[99999] p-4 transform -translate-x-full transition-transform duration-300';
     card.innerHTML = '<div>Card Content Here</div>';
     document.body.appendChild(card);
 
