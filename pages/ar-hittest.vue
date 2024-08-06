@@ -142,7 +142,6 @@ function render(timestamp, frame) {
 <template>
     <div ref="content">
         <div ref="container" class="fixed"></div>
-        <button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100">Click Me</button>
         <div id="mySidenav" class="sidenav">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <a class="ar-object" id="1" href="#">item_1</a>
@@ -150,6 +149,7 @@ function render(timestamp, frame) {
             <a class="ar-object" id="3" href="#">item_3</a>
             <a class="ar-object" id="4" href="#">item_4</a>
         </div>
+        <span style="font-size:30px;cursor:pointer;position: absolute;" onclick="openNav()">&#9776; open</span>
     </div>
 </template>
 
