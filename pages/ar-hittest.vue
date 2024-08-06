@@ -116,9 +116,7 @@ function render(timestamp, frame) {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
                 isAr.value = false;
-                if (button.value) {
-                    button.value.style.display = "none";
-                }
+                reticle.visible = false;
             });
 
             hitTestSourceRequested = true;
@@ -131,14 +129,8 @@ function render(timestamp, frame) {
                 const hit = hitTestResults[0];
                 reticle.visible = true;
                 reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
-                if (button.value) {
-                    button.value.style.display = "block";
-                }
             } else {
                 reticle.visible = false;
-                if (button.value) {
-                    button.value.style.display = "none";
-                }
             }
         }
     }
@@ -150,6 +142,6 @@ function render(timestamp, frame) {
 <template>
     <div ref="content">
         <div ref="container" class="fixed"></div>
-        <button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100 hidden">Click Me</button>
+        <button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100">Click Me</button>
     </div>
 </template>
