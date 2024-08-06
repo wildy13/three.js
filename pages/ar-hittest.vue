@@ -133,13 +133,11 @@ function render(timestamp, frame) {
                 reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
                 if (button.value) {
                     button.value.style.display = "block";
-                    console.log("Button displayed");
                 }
             } else {
                 reticle.visible = false;
                 if (button.value) {
                     button.value.style.display = "none";
-                    console.log("Button hidden");
                 }
             }
         }
@@ -151,9 +149,7 @@ function render(timestamp, frame) {
 
 <template>
     <div ref="content">
-        <div ref="container"></div>
-        <div>
-            <button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100 hidden">Click Me</button>
-        </div>
+        <div ref="container" class="fixed"></div>
+        <button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100 hidden">Click Me</button>
     </div>
 </template>
