@@ -38,8 +38,8 @@ function init() {
     // Set up ARButton with domOverlay
     const options = {
         requiredFeatures: ['hit-test'],
-        optionalFeatures: ['dom-overlay'],
-        domOverlay: { root: content.value }
+        optionalFeatures: ['dom-overlay', 'dom-overlay-for-handheld-ar'],
+        domOverlay: { root: document.body }
     };
     document.body.appendChild(ARButton.createButton(renderer, options));
 
