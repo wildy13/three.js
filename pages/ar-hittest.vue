@@ -6,6 +6,7 @@ import * as THREE from 'three';
 
 const container = ref(null);
 const button = ref(null);
+const content = ref(null);
 const isAr = ref(false);
 let camera, scene, renderer;
 let controller;
@@ -45,7 +46,7 @@ function init() {
     const options = {
         requiredFeatures: ['hit-test'],
         optionalFeatures: ['dom-overlay'],
-        domOverlay: { root: button.value }
+        domOverlay: { root: content.value }
     };
     document.body.appendChild(ARButton.createButton(renderer, options));
 
@@ -85,7 +86,7 @@ function init() {
     scene.add(reticle);
 
     window.addEventListener('resize', onWindowResize);
-    
+
 }
 
 function onWindowResize() {
@@ -141,7 +142,7 @@ function render(timestamp, frame) {
 
 
 <template>
-    <div id="content">
+    <div ref="content">
         <div ref="container"></div>
         <div>
             <button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100">Click Me</button>
