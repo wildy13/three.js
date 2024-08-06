@@ -18,9 +18,11 @@ onMounted(() => {
     init();
     animate();
 
-    $("#ARButton").click(function () {
-        isAR = true;
-    });
+    document.getElementById("ARButton").click(
+        function() {
+            isAr.value = true;
+        }
+    )
 });
 
 function init() {
@@ -110,7 +112,7 @@ function render(timestamp, frame) {
             session.addEventListener('end', () => {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
-                isAR = false;
+                isAR.value = false;
                 button.value.style.display = "none";
             });
 
