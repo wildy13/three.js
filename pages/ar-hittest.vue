@@ -7,7 +7,6 @@ import * as THREE from 'three';
 const container = ref(null);
 const button = ref(null);
 const content = ref(null);
-const isAr = ref(false);
 let camera, scene, renderer;
 let controller;
 let reticle;
@@ -18,14 +17,6 @@ let hitTestSourceRequested = false;
 onMounted(() => {
     init();
     animate();
-    const arButton = document.getElementById("ARButton");
-    if (arButton) {
-        arButton.addEventListener('click', () => {
-            isAr.value = true;
-        });
-    } else {
-        console.error("ARButton element not found");
-    }
 });
 
 function init() {
@@ -91,6 +82,21 @@ function init() {
     scene.add(reticle);
 
     window.addEventListener('resize', onWindowResize);
+
+    renderer.domElement.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        console.log(e);
+    }, { passive: true });
+
+    renderer.domElement.addEventListener('touchend', function (e) {
+        e.preventDefault();
+        console.log(e);
+    }, { passive: true });
+
+    renderer.domElement.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+        console.log(e);
+    }, { passive: true });
 }
 
 function onWindowResize() {
@@ -104,7 +110,7 @@ function animate() {
 }
 
 function render(timestamp, frame) {
-    if (frame && isAr.value === true) {
+    if (frame) {
         const referenceSpace = renderer.xr.getReferenceSpace();
         const session = renderer.xr.getSession();
 
@@ -118,9 +124,8 @@ function render(timestamp, frame) {
             session.addEventListener('end', () => {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
-                isAr.value = false;
                 var box = new THREE.Box3();
-                const objectClone =  object.clone();
+                const objectClone = object.clone();
                 box.setFromObject(objectClone);
                 if (button.value) {
                     button.value.style.display = "none";
