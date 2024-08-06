@@ -16,6 +16,7 @@ let hitTestSourceRequested = false;
 
 onMounted(() => {
     init();
+    _createButton();
     animate();
 });
 
@@ -35,11 +36,6 @@ function init() {
     renderer.xr.enabled = true;
     container.value.appendChild(renderer.domElement);
 
-    const button = document.createElement("button");
-    document.body.appendChild(button);
-    button.innerHTML = "Click Me";
-    button.className = "z-[99999] absolute top-5 left-5 text-slate-100";
-    button.ref  = "button";
     // Set up ARButton with domOverlay
     const options = {
         requiredFeatures: ['hit-test'],
@@ -160,6 +156,17 @@ function render(timestamp, frame) {
     }
 
     renderer.render(scene, camera);
+}
+
+function _createButton() {
+    const button = document.createElement("button");
+    document.body.appendChild(button);
+    button.innerHTML = "Click Me";
+    button.className = "z-[99999] absolute top-5 left-5 text-slate-100";
+    button.ref  = "button";
+    button.addEventListener('click', function(){
+        alert('Button CLick')
+    })
 }
 </script>
 
