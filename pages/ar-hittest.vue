@@ -65,6 +65,9 @@ function init() {
             placedObject.visible = true;
             placedObject.scale.set(0.1, 0.1, 0.1);
             scene.add(placedObject);
+
+            const axesHelper = new THREE.AxesHelper(100);
+            placedObject.add(axesHelper);
         }
     }
 
