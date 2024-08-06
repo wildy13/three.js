@@ -47,7 +47,7 @@ function init() {
 
     const loader = new GLTFLoader();
     loader.load(
-        '/bipedal_mech/scene.gltf',
+        '/food/scene.gltf',
         (gltf) => {
             object = gltf.scene;
             object.visible = true;
@@ -58,18 +58,29 @@ function init() {
         }
     );
 
+
+
     function onSelect() {
         if (reticle.visible && object) {
+            // Create a new pivot point
+            const pivot = new THREE.Group();
+            pivot.position.setFromMatrixPosition(reticle.matrix);
+            scene.add(pivot);
+
+            // Clone the object and add it to the pivot
             const placedObject = object.clone();
-            placedObject.position.setFromMatrixPosition(reticle.matrix);
             placedObject.visible = true;
             placedObject.scale.set(0.1, 0.1, 0.1);
-            scene.add(placedObject);
 
-            const axesHelper = new THREE.AxesHelper(100);
+            // Add the placedObject to the pivot
+            pivot.add(placedObject);
+
+            // Optionally, add an AxesHelper to the placedObject for visualization
+            const axesHelper = new THREE.AxesHelper(1);
             placedObject.add(axesHelper);
         }
     }
+
 
     controller = renderer.xr.getController(0);
     controller.addEventListener('select', onSelect);
@@ -137,7 +148,7 @@ function _createSlideBar() {
     document.body.appendChild(button);
     button.innerHTML = "Click Me";
     button.className = "z-[99999] absolute top-5 left-5 text-slate-100 bg-blue-500 p-2 rounded";
-    
+
     button.addEventListener('click', function () {
         const card = document.querySelector('.card');
         if (card.classList.contains('-translate-x-full')) {
