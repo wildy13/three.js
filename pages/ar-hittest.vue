@@ -51,9 +51,6 @@ function init() {
         (gltf) => {
             object = gltf.scene;
             object.visible = true;
-
-            var box = new THREE.Box3();
-            box.setFromObject(object);
         },
         undefined,
         (error) => {
@@ -84,21 +81,6 @@ function init() {
     scene.add(reticle);
 
     window.addEventListener('resize', onWindowResize);
-
-    renderer.domElement.addEventListener('touchstart', function (e) {
-        e.preventDefault();
-        console.log(e);
-    }, false);
-
-    renderer.domElement.addEventListener('touchend', function (e) {
-        e.preventDefault();
-        console.log(e);
-    }, false);
-
-    renderer.domElement.addEventListener('touchmove', function (e) {
-        e.preventDefault();
-        console.log(e);
-    }, false);
 }
 
 function onWindowResize() {
@@ -126,12 +108,6 @@ function render(timestamp, frame) {
             session.addEventListener('end', () => {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
-                var box = new THREE.Box3();
-                const objectClone = object.clone();
-                box.setFromObject(objectClone);
-                if (button.value) {
-                    button.value.style.display = "none";
-                }
             });
 
             hitTestSourceRequested = true;
@@ -144,14 +120,8 @@ function render(timestamp, frame) {
                 const hit = hitTestResults[0];
                 reticle.visible = true;
                 reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
-                if (button.value) {
-                    button.value.style.display = "block";
-                }
             } else {
                 reticle.visible = false;
-                if (button.value) {
-                    button.value.style.display = "none";
-                }
             }
         }
     }
@@ -164,8 +134,7 @@ function _createSlideBar() {
     document.body.appendChild(button);
     button.innerHTML = "Click Me";
     button.className = "z-[99999] absolute top-5 left-5 text-slate-100 bg-blue-500 p-2 rounded";
-    button.ref = "button";
-
+    
     button.addEventListener('click', function () {
         const card = document.querySelector('.card');
         if (card.classList.contains('-translate-x-full')) {
