@@ -86,17 +86,17 @@ function init() {
     renderer.domElement.addEventListener('touchstart', function (e) {
         e.preventDefault();
         console.log(e);
-    }, { passive: true });
+    }, false);
 
     renderer.domElement.addEventListener('touchend', function (e) {
         e.preventDefault();
         console.log(e);
-    }, { passive: true });
+    }, false);
 
     renderer.domElement.addEventListener('touchmove', function (e) {
         e.preventDefault();
         console.log(e);
-    }, { passive: true });
+    }, false);
 }
 
 function onWindowResize() {
