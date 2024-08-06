@@ -73,11 +73,14 @@ function init() {
             placedObject.scale.set(0.1, 0.1, 0.1);
 
             // Add the placedObject to the pivot
-            pivot.add(placedObject);
+            const pivotWorldPosition = new THREE.Vector3();
+            pivot.getWorldPosition(pivotWorldPosition);
+            placedObject.position.copy(pivotWorldPosition)
 
             // Optionally, add an AxesHelper to the placedObject for visualization
             const axesHelper = new THREE.AxesHelper(1);
             placedObject.add(axesHelper);
+            scene.add(placedObject);
         }
     }
 
