@@ -98,7 +98,7 @@ function animate() {
 }
 
 function render(timestamp, frame) {
-    if (frame && isAr) {
+    if (frame && isAr.value == true) {
         const referenceSpace = renderer.xr.getReferenceSpace();
         const session = renderer.xr.getSession();
 
