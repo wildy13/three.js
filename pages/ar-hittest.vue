@@ -51,7 +51,7 @@ function init() {
         domOverlay: { root: content.value }
     };
     document.body.appendChild(ARButton.createButton(renderer, options));
-    
+
     const loader = new GLTFLoader();
     loader.load(
         '/food/scene.gltf',
@@ -150,6 +150,6 @@ function render(timestamp, frame) {
 <template>
     <div ref="content">
         <div ref="container" class="fixed"></div>
-<button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100 hidden">Click Me</button>
+        <button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100 hidden">Click Me</button>
     </div>
 </template>
