@@ -17,7 +17,7 @@ let hitTestSourceRequested = false;
 
 onMounted(() => {
     init();
-    _createButton();
+    _createSlideBar();
     animate();
 });
 
@@ -159,7 +159,7 @@ function render(timestamp, frame) {
     renderer.render(scene, camera);
 }
 
-function _createButton() {
+function _createSlideBar() {
     const button = document.createElement("button");
     document.body.appendChild(button);
     button.innerHTML = "Click Me";
@@ -179,19 +179,29 @@ function _createButton() {
 
     // Create card element
     const card = document.createElement('div');
-    card.className = 'card fixed top-0 left-0 w-1/3 h-full bg-slate-100 z-[99999] p-4 transform -translate-x-full transition-transform duration-300';
-    card.innerHTML = '<div>Card Content Here</div>';
+    card.className = 'card fixed top-0 left-0 w-1/2 h-full bg-slate-100 z-[99999] p-4 transform -translate-x-full transition-transform duration-300';
     document.body.appendChild(card);
 
-    // Create close button
+    // Create parent close button
+    const parentCloseButton = document.createElement('div');
+    parentCloseButton.className = "w-full rounded p-1 flex justify-end items-center";
+    card.appendChild(parentCloseButton);
+
+    // create close button
     const closeButton = document.createElement('button');
     closeButton.innerText = "Close";
-    closeButton.className = "absolute top-2 right-2 bg-red-500 text-white p-1 rounded";
     closeButton.addEventListener('click', function () {
         card.classList.add('-translate-x-full');
         card.classList.remove('translate-x-0');
     });
-    card.appendChild(closeButton);
+    parentCloseButton.appendChild(closeButton);
+
+
+    // create body
+    const bodyCard = document.createElement('div');
+    card.appendChild(bodyCard);
+    bodyCard.className = "relative top-10 w-full";
+    bodyCard.innerText = "body"
 }
 
 </script>
