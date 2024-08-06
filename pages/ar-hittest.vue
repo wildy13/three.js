@@ -122,13 +122,13 @@ function render(timestamp, frame) {
     renderer.render(scene, camera);
 }
 
-function stopAR() {
-    arActive.value = false; // Set AR state to inactive
-    renderer.xr.getSession().end(); // End the AR session
-}
+// function stopAR() {
+//     arActive.value = false; // Set AR state to inactive
+//     renderer.xr.getSession().end(); // End the AR session
+// }
 </script>
 
 <template>
     <div ref="container"></div>
-    <button @click="stopAR" class="absolute text-slate-100 top-5 left-5 z-[99999]">Stop AR</button>
+    <!-- <button @click="stopAR" class="absolute text-slate-100 top-5 left-5 z-[99999]">Stop AR</button> -->
 </template>
