@@ -17,12 +17,12 @@ let hitTestSourceRequested = false;
 onMounted(() => {
     init();
     animate();
-
-    document.getElementById("ARButton").click(
-        function() {
+    const arButton = document.getElementById("ARButton");
+    if (arButton) {
+        arButton.addEventListener('click', () => {
             isAr.value = true;
-        }
-    )
+        });
+    }
 });
 
 function init() {
@@ -98,7 +98,7 @@ function animate() {
 }
 
 function render(timestamp, frame) {
-    if (frame && isAr.value == true) {
+    if (frame && isAr.value === true) {
         const referenceSpace = renderer.xr.getReferenceSpace();
         const session = renderer.xr.getSession();
 
@@ -112,7 +112,7 @@ function render(timestamp, frame) {
             session.addEventListener('end', () => {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
-                isAR.value = false;
+                isAr.value = false;
                 button.value.style.display = "none";
             });
 
