@@ -36,7 +36,13 @@ function init() {
     renderer.xr.enabled = true;
     container.value.appendChild(renderer.domElement);
 
-    document.body.appendChild(ARButton.createButton(renderer, { requiredFeatures: ['hit-test'] }));
+    let options = {
+        requiredFeatures: ['hit-test'],
+        optionalFeatures: ['dom-overlay']
+    }
+
+    options.domOverlay = { root: document.getElementById('content') }
+    document.body.appendChild(ARButton.createButton(renderer, options));
 
     const loader = new GLTFLoader();
     loader.load(
@@ -104,6 +110,7 @@ function render(timestamp, frame) {
             session.addEventListener('end', () => {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
+                document.getElementById("myButton").style.display = "none"
             });
 
             hitTestSourceRequested = true;
@@ -116,8 +123,10 @@ function render(timestamp, frame) {
                 const hit = hitTestResults[0];
                 reticle.visible = true;
                 reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
+                document.getElementById("myButton").style.display = "block"
             } else {
                 reticle.visible = false;
+                document.getElementById("myButton").style.display = "none"
             }
         }
     }
@@ -127,5 +136,11 @@ function render(timestamp, frame) {
 </script>
 
 <template>
-    <div ref="container"></div>
+    <div>
+        <div ref="container"></div>
+        <div>
+            <button id="myButton" class="z-[99999] absolute top-5 left-5 text-slate-100">Click Me</button>
+        </div>
+    </div>
+
 </template>
