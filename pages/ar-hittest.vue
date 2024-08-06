@@ -47,7 +47,7 @@ function init() {
 
     const loader = new GLTFLoader();
     loader.load(
-        '/food/scene.gltf',
+        '/bipedal_mech/scene.gltf',
         (gltf) => {
             object = gltf.scene;
             object.visible = true;
