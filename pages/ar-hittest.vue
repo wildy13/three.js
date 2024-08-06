@@ -6,6 +6,7 @@ import * as THREE from 'three';
 
 const container = ref(null);
 const button = ref(null);
+const isAr = ref(false);
 let camera, scene, renderer;
 let controller;
 let reticle;
@@ -16,6 +17,10 @@ let hitTestSourceRequested = false;
 onMounted(() => {
     init();
     animate();
+
+    $("#ARButton").click(function () {
+        isAR = true;
+    });
 });
 
 function init() {
@@ -91,7 +96,7 @@ function animate() {
 }
 
 function render(timestamp, frame) {
-    if (frame) {
+    if (frame && isAr) {
         const referenceSpace = renderer.xr.getReferenceSpace();
         const session = renderer.xr.getSession();
 
@@ -105,6 +110,7 @@ function render(timestamp, frame) {
             session.addEventListener('end', () => {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
+                isAR = false;
                 button.value.style.display = "none";
             });
 
