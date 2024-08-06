@@ -54,11 +54,11 @@ function init() {
     function onSelect() {
         if (reticle.visible && object) {
             const placedObject = object.clone();
-            reticle.matrix.decompose(placedObject.position, placedObject.quaternion, placedObject.scale);
-            placedObject.scale.set(0.1, 0.1, 0.1);
-            // placedObject.position.setFromMatrixPosition(reticle.matrix);
-            // placedObject.visible = true; // Ensure the cloned object is visible
+            // reticle.matrix.decompose(placedObject.position, placedObject.quaternion, placedObject.scale);
             // placedObject.scale.set(0.1, 0.1, 0.1);
+            placedObject.position.setFromMatrixPosition(reticle.matrix);
+            placedObject.visible = true; // Ensure the cloned object is visible
+            placedObject.scale.set(0.1, 0.1, 0.1);
             scene.add(placedObject);
         }
     }
