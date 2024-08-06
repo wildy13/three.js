@@ -58,6 +58,9 @@ function init() {
         (gltf) => {
             object = gltf.scene;
             object.visible = true;
+
+            var box = new THREE.Box3();
+            box.setFromObject(object);
         },
         undefined,
         (error) => {
@@ -116,6 +119,9 @@ function render(timestamp, frame) {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
                 isAr.value = false;
+                var box = new THREE.Box3();
+                const objectClone =  object.clone();
+                box.setFromObject(objectClone);
                 if (button.value) {
                     button.value.style.display = "none";
                 }
