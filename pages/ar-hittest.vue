@@ -51,7 +51,7 @@ function init() {
         domOverlay: { root: content.value }
     };
     document.body.appendChild(ARButton.createButton(renderer, options));
-
+    
     const loader = new GLTFLoader();
     loader.load(
         '/food/scene.gltf',
@@ -116,7 +116,9 @@ function render(timestamp, frame) {
                 hitTestSourceRequested = false;
                 hitTestSource = null;
                 isAr.value = false;
-                reticle.visible = false;
+                if (button.value) {
+                    button.value.style.display = "none";
+                }
             });
 
             hitTestSourceRequested = true;
@@ -129,8 +131,14 @@ function render(timestamp, frame) {
                 const hit = hitTestResults[0];
                 reticle.visible = true;
                 reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
+                if (button.value) {
+                    button.value.style.display = "block";
+                }
             } else {
                 reticle.visible = false;
+                if (button.value) {
+                    button.value.style.display = "none";
+                }
             }
         }
     }
@@ -142,78 +150,6 @@ function render(timestamp, frame) {
 <template>
     <div ref="content">
         <div ref="container" class="fixed"></div>
-        <div id="mySidenav" class="sidenav">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a class="ar-object" id="1" href="#">item_1</a>
-            <a class="ar-object" id="2" href="#">item_2</a>
-            <a class="ar-object" id="3" href="#">item_3</a>
-            <a class="ar-object" id="4" href="#">item_4</a>
-        </div>
-        <span style="font-size:30px;cursor:pointer;position: absolute;" onclick="openNav()">&#9776; open</span>
+<button ref="button" class="z-[99999] absolute top-5 left-5 text-slate-100 hidden">Click Me</button>
     </div>
 </template>
-
-<style>
-body {
-    background-color: aqua;
-    color: #fff;
-    font-family: "Lato", sans-serif;
-}
-
-.sidenav {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #111;
-    overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 60px;
-}
-
-.sidenav a {
-    padding: 8px 8px 8px 32px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
-    transition: 0.3s;
-}
-
-.sidenav a:hover {
-    color: #f1f1f1;
-}
-
-.sidenav .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
-}
-
-@media screen and (max-height: 450px) {
-    .sidenav {
-        padding-top: 15px;
-    }
-
-    .sidenav a {
-        font-size: 18px;
-    }
-}
-
-#place-button {
-    position: absolute;
-    bottom: 20px;
-    left: calc(50% - 50px);
-    width: 100px;
-    height: 35px;
-    display: none;
-}
-
-#VRButton {
-    margin-bottom: 70px !important;
-}
-</style>
