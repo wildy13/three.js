@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue';
+import { SlideOver } from '../src/slideOver.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { ARButton } from 'three/addons/webxr/ARButton.js';
 import * as THREE from 'three';
@@ -17,8 +18,10 @@ let hitTestSourceRequested = false;
 
 onMounted(() => {
     init();
-    _createSlideBar();
+    // _createSlideBar();
     animate();
+    const body = document.body;
+    const slider = new SlideOver();
 });
 
 function init() {
@@ -146,49 +149,49 @@ function render(timestamp, frame) {
     renderer.render(scene, camera);
 }
 
-function _createSlideBar() {
-    const button = document.createElement("button");
-    document.body.appendChild(button);
-    button.innerHTML = "Click Me";
-    button.className = "z-[99999] absolute top-5 left-5 text-slate-100 bg-blue-500 p-2 rounded";
+// function _createSlideBar() {
+//     const button = document.createElement("button");
+//     document.body.appendChild(button);
+//     button.innerHTML = "Click Me";
+//     button.className = "z-[99999] absolute top-5 left-5 text-slate-100 bg-blue-500 p-2 rounded";
 
-    button.addEventListener('click', function () {
-        const card = document.querySelector('.card');
-        if (card.classList.contains('-translate-x-full')) {
-            card.classList.remove('-translate-x-full');
-            card.classList.add('translate-x-0');
-        } else {
-            card.classList.remove('translate-x-0');
-            card.classList.add('-translate-x-full');
-        }
-    });
+//     button.addEventListener('click', function () {
+//         const card = document.querySelector('.card');
+//         if (card.classList.contains('-translate-x-full')) {
+//             card.classList.remove('-translate-x-full');
+//             card.classList.add('translate-x-0');
+//         } else {
+//             card.classList.remove('translate-x-0');
+//             card.classList.add('-translate-x-full');
+//         }
+//     });
 
-    // Create card element
-    const card = document.createElement('div');
-    card.className = 'card fixed top-0 left-0 w-1/2 h-full bg-slate-100 z-[99999] p-4 transform -translate-x-full transition-transform duration-300';
-    document.body.appendChild(card);
+//     // Create card element
+//     const card = document.createElement('div');
+//     card.className = 'card fixed top-0 left-0 w-1/2 h-full bg-slate-100 z-[99999] p-4 transform -translate-x-full transition-transform duration-300';
+//     document.body.appendChild(card);
 
-    // Create parent close button
-    const parentCloseButton = document.createElement('div');
-    parentCloseButton.className = "w-full rounded p-1 flex justify-end items-center";
-    card.appendChild(parentCloseButton);
+//     // Create parent close button
+//     const parentCloseButton = document.createElement('div');
+//     parentCloseButton.className = "w-full rounded p-1 flex justify-end items-center";
+//     card.appendChild(parentCloseButton);
 
-    // create close button
-    const closeButton = document.createElement('button');
-    closeButton.innerText = "Close";
-    closeButton.addEventListener('click', function () {
-        card.classList.add('-translate-x-full');
-        card.classList.remove('translate-x-0');
-    });
-    parentCloseButton.appendChild(closeButton);
+//     // create close button
+//     const closeButton = document.createElement('button');
+//     closeButton.innerText = "Close";
+//     closeButton.addEventListener('click', function () {
+//         card.classList.add('-translate-x-full');
+//         card.classList.remove('translate-x-0');
+//     });
+//     parentCloseButton.appendChild(closeButton);
 
 
-    // create body
-    const bodyCard = document.createElement('div');
-    card.appendChild(bodyCard);
-    bodyCard.className = "relative top-10 w-full";
-    bodyCard.innerText = "body"
-}
+//     // create body
+//     const bodyCard = document.createElement('div');
+//     card.appendChild(bodyCard);
+//     bodyCard.className = "relative top-10 w-full";
+//     bodyCard.innerText = "body"
+// }
 
 </script>
 
