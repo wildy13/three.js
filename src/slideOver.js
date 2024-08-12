@@ -1,9 +1,9 @@
-// slider.js
 export class SlideOver {
     constructor(options = {
         open: { id: 'open_button', name: 'Open', background: 'bg-blue-500', fontColor: 'text-slate-100' },
         close: { id: 'close_button', name: 'Close' },
-        card: { id: 'card', background: 'bg-slate-400' }
+        card: { id: 'card', background: 'bg-slate-400' },
+        body: { id: 'body', button: 2, name: [] }
     }) {
         this.options = options;
         this.createElements();
@@ -21,7 +21,6 @@ export class SlideOver {
         let element;
 
         if (type === 'open') {
-            // Remove existing element if it exists
             const existingOpenElement = document.querySelector(`#${config.id}`);
             if (existingOpenElement) {
                 existingOpenElement.remove();
@@ -51,7 +50,6 @@ export class SlideOver {
             });
 
         } else if (type === 'card') {
-            // Remove existing card element if it exists
             const existingCardElement = document.querySelector(`#${config.id}`);
             if (existingCardElement) {
                 existingCardElement.remove();
@@ -75,7 +73,7 @@ export class SlideOver {
 
                     const parent = document.createElement('div');
                     parent.className = 'w-full p-1 flex justify-end items-center';
-                    card.appendChild(parent);
+                    card.insertBefore(parent, card.children[0]);
 
                     element = document.createElement('button');
                     element.innerText = config.name;
@@ -90,6 +88,29 @@ export class SlideOver {
                     console.error('Card element not found for close button!');
                 }
             }, 100);
+        } else if (type === 'body') {
+            const card = document.querySelector(`#${this.options.card.id}`);
+            if (card) {
+                const parent = document.createElement('div');
+                parent.className = "flex flex-col p-2";
+                card.appendChild(parent);
+
+                if (Array.isArray(config.name)) {
+                    config.name.forEach((item, index) => {
+                        const button = document.createElement('button');
+                        button.innerText = item.name || `Button ${index + 1}`;
+                        parent.appendChild(button);
+                    });
+                } else {
+                    for (let index = 0; index < config.button; index++) {
+                        const button = document.createElement('button');
+                        button.innerText = `Button ${index + 1}`;
+                        parent.appendChild(button);
+                    }
+                }
+            } else {
+                console.error('Card element not found for body buttons!');
+            }
         }
     }
 
