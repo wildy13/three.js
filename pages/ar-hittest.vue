@@ -1,14 +1,12 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import { SlideOver } from '../src/slideOver.js'
+import { SlideOver } from 'three-ui-ar'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { ARButton } from 'three/addons/webxr/ARButton.js';
 import * as THREE from 'three';
 
 const container = ref(null);
-const button = ref(null);
 const content = ref(null);
-const isCardVisible = ref(false);
 let camera, scene, renderer;
 let controller;
 let reticle;
@@ -19,21 +17,42 @@ let hitTestSourceRequested = false;
 onMounted(() => {
     init();
     animate();
-    const body = document.body;
-    const slider = new SlideOver();
-    slider.updateOptions({
+
+    const sliderover = new SlideOver();
+
+    sliderover.updateOptions({
         body: {
-            length: 3,
-            name: [{
-                name: 'HVAC'
-            }, {
-                name: 'ELECTRICAL'
-            }, {
-                name: 'BIOMEDICAL'
-            }]
+            menu: [{
+                name: 'Menu 1',
+                submenu: [{
+                    name: "Submenu 1"
+                },
+                {
+                    name: "Submenu 2"
+                }]
+            },
+            {
+                name: 'Menu 2'
+            },
+            {
+                name: 'Menu 3'
+            }],
         }
-    })
+    });
+
+    sliderover.onButtonClick((id) => {
+        console.log(`Button clicked with ID: ${id}`);
+    });
+
+    // Menetapkan callback untuk submenu click
+    sliderover.onSubmenuClick((id) => {
+        console.log(`Submenu clicked with ID: ${id}`);
+    });
+
 });
+
+
+
 
 function init() {
     scene = new THREE.Scene();
