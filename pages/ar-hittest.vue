@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import { SlideOver } from 'three-ui-ar'
+import { Carousel } from 'three-ui-ar'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { ARButton } from 'three/addons/webxr/ARButton.js';
 import * as THREE from 'three';
@@ -17,36 +17,21 @@ let hitTestSourceRequested = false;
 onMounted(() => {
     init();
     animate();
-
-    const sliderover = new SlideOver();
-
-    sliderover.updateOptions({
-        body: {
-            menu: [{
-                name: 'Menu 1',
-                submenu: [{
-                    name: "Submenu 1"
-                },
-                {
-                    name: "Submenu 2"
-                }]
-            },
-            {
-                name: 'Menu 2'
-            },
-            {
-                name: 'Menu 3'
-            }],
-        }
+    const carousel = new Carousel({
+        id: 'crl-1',
+        items: [
+            { src: 'https://picsum.photos/600/800?random=1', alt: 'Image 1' },
+            { src: 'https://picsum.photos/600/800?random=2', alt: 'Image 2' },
+            { src: 'https://picsum.photos/600/800?random=3', alt: 'Image 3' },
+            { src: 'https://picsum.photos/600/800?random=4', alt: 'Image 4' },
+            { src: 'https://picsum.photos/600/800?random=5', alt: 'Image 5' }
+        ],
+        itemWidth: '200px',
+        gap: '10px'
     });
 
-    sliderover.onButtonClick((id) => {
-        console.log(`Button clicked with ID: ${id}`);
-    });
-
-    // Menetapkan callback untuk submenu click
-    sliderover.onSubmenuClick((id) => {
-        console.log(`Submenu clicked with ID: ${id}`);
+    carousel.onButtonClick((slug) => {
+        console.log('Item clicked:', slug);
     });
 
 });
