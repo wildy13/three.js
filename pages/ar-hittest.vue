@@ -14,6 +14,11 @@ let object;
 let hitTestSource = null;
 let hitTestSourceRequested = false;
 
+let isRotating = false;
+let initialRotation = { x: 0, y: 0 };
+let initialScale = 1;
+let initialDistance = 0;
+
 onMounted(() => {
     init();
     animate();
@@ -33,11 +38,7 @@ onMounted(() => {
     carousel.onButtonClick((slug) => {
         console.log('Item clicked:', slug);
     });
-
 });
-
-
-
 
 function init() {
     scene = new THREE.Scene();
@@ -55,7 +56,6 @@ function init() {
     renderer.xr.enabled = true;
     container.value.appendChild(renderer.domElement);
 
-    // Set up ARButton with domOverlay
     const options = {
         requiredFeatures: ['hit-test'],
         optionalFeatures: ['dom-overlay', 'dom-overlay-for-handheld-ar'],
@@ -69,6 +69,7 @@ function init() {
         (gltf) => {
             object = gltf.scene;
             object.visible = true;
+            addTouchListeners();
         },
         undefined,
         (error) => {
@@ -76,32 +77,27 @@ function init() {
         }
     );
 
-
-
     function onSelect() {
         if (reticle.visible && object) {
-            // Create a new pivot point
             const pivot = new THREE.Group();
             pivot.position.setFromMatrixPosition(reticle.matrix);
             scene.add(pivot);
 
-            // Clone the object and add it to the pivot
             const placedObject = object.clone();
             placedObject.visible = true;
             placedObject.scale.set(0.1, 0.1, 0.1);
 
-            // Add the placedObject to the pivot
             const pivotWorldPosition = new THREE.Vector3();
             pivot.getWorldPosition(pivotWorldPosition);
             placedObject.position.copy(pivotWorldPosition)
 
-            // Optionally, add an AxesHelper to the placedObject for visualization
             const axesHelper = new THREE.AxesHelper(1);
             placedObject.add(axesHelper);
             scene.add(placedObject);
+
+            object = placedObject; // set the placed object as the one to interact with
         }
     }
-
 
     controller = renderer.xr.getController(0);
     controller.addEventListener('select', onSelect);
@@ -116,6 +112,45 @@ function init() {
     scene.add(reticle);
 
     window.addEventListener('resize', onWindowResize);
+}
+
+function addTouchListeners() {
+    let initialTouch = null;
+
+    content.value.addEventListener('touchstart', (event) => {
+        if (event.touches.length === 1) {
+            initialTouch = { x: event.touches[0].pageX, y: event.touches[0].pageY };
+            initialRotation.x = object.rotation.x;
+            initialRotation.y = object.rotation.y;
+        } else if (event.touches.length === 2) {
+            initialDistance = getDistance(event.touches[0], event.touches[1]);
+            initialScale = object.scale.x; // assuming uniform scaling
+        }
+    });
+
+    content.value.addEventListener('touchmove', (event) => {
+        if (event.touches.length === 1 && initialTouch) {
+            const deltaX = event.touches[0].pageX - initialTouch.x;
+            const deltaY = event.touches[0].pageY - initialTouch.y;
+
+            object.rotation.y = initialRotation.y + deltaX * 0.01;
+            object.rotation.x = initialRotation.x + deltaY * 0.01;
+        } else if (event.touches.length === 2) {
+            const currentDistance = getDistance(event.touches[0], event.touches[1]);
+            const scale = initialScale * (currentDistance / initialDistance);
+            object.scale.set(scale, scale, scale);
+        }
+    });
+
+    content.value.addEventListener('touchend', () => {
+        initialTouch = null;
+    });
+}
+
+function getDistance(touch1, touch2) {
+    const dx = touch1.pageX - touch2.pageX;
+    const dy = touch1.pageY - touch2.pageY;
+    return Math.sqrt(dx * dx + dy * dy);
 }
 
 function onWindowResize() {
@@ -163,8 +198,6 @@ function render(timestamp, frame) {
 
     renderer.render(scene, camera);
 }
-
-
 </script>
 
 <template>
