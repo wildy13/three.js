@@ -16,6 +16,8 @@ let scene, renderer, camera, controls;
 let room, intersectionRoom;
 let raycaster, userText, currentLayoutButton, keyboard, layoutOptions, mouse, vrControl, selectState, touchState;
 
+let isShiftActive = false;
+
 const objsToTest = [];
 const colors = {
     keyboardBack: 0x858585,
@@ -32,6 +34,7 @@ onMounted(() => {
 
     selectState = false;
     touchState = false;
+
 
     window.addEventListener('pointermove', (event) => {
 
@@ -502,7 +505,10 @@ function makeKeyboard(language) {
                             break;
 
                         case 'shift':
-                            keyboard.toggleCase();
+                            isShiftActive = !isShiftActive; // Toggle Shift state
+                            keyboard.keys.forEach((key) => {
+                                key.info.input = isShiftActive ? key.info.input.toUpperCase() : key.info.input.toLowerCase();
+                            });
                             break;
 
                     }
