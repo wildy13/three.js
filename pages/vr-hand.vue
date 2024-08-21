@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+import { OculusHandModel } from 'three/examples/jsm/webxr/OculusHandModel.js';
 import { onMounted, ref } from 'vue';
 
 const Container = ref(null);
@@ -13,11 +14,14 @@ let mouse;
 let raycaster;
 let controller1, controller2;
 
-const handMeshes = { left: [], right: [] };
+let hand1, hand2;
+let trail = []; // Inisialisasi trail sebagai array kosong
+let i;
 
 onMounted(() => {
     _listener();
     _initScene();
+    _hand();
     animate();
 });
 
@@ -73,33 +77,19 @@ function _initScene() {
 
 function animate() {
     renderer.setAnimationLoop(() => {
-        const session = renderer.xr.getSession();
-
-        // Pastikan hand tracking berjalan jika sesi ada
-        if (session) {
-            const inputSources = session.inputSources;
-            inputSources.forEach(inputSource => {
-                if (inputSource.hand) {
-                    const hand = inputSource.hand;
-                    const handedness = inputSource.handedness; // 'left' or 'right'
-                    const meshes = handMeshes[handedness];
-
-                    if (meshes.length === 0) {
-                        // Membuat mesh untuk setiap sendi tangan
-                        for (const key of hand.joints.keys()) {
-                            const mesh = createHandMesh();
-                            meshes.push(mesh);
-                            scene.add(mesh);
-                        }
-                    }
-
-                    // Memperbarui posisi dan orientasi mesh
-                    updateHandMesh(hand, meshes, inputSource);
-                }
-            });
-        }
-
         renderer.render(scene, camera);
+
+        // Periksa jika hand1 dan trail[i] sudah didefinisikan
+        if (hand1 && hand1.joints && hand1.joints['index-finger-tip'] && trail[i]) {
+            const jointPosition = hand1.joints['index-finger-tip'].position;
+            if (jointPosition) {
+                trail[i].position.copy(jointPosition);
+                i++;
+                if (i > 99) {
+                    i = 0;
+                }
+            }
+        }
     });
 }
 
@@ -116,21 +106,26 @@ function onMouseClick(event) {
     }
 }
 
-function createHandMesh() {
-    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-    const geometry = new THREE.SphereGeometry(0.02, 10, 10);
-    const mesh = new THREE.Mesh(geometry, material);
-    return mesh;
-}
+function _hand() {
+    // hand 1
+    hand1 = renderer.xr.getHand(1);
+    hand1.add(new OculusHandModel(hand1));
+    scene.add(hand1);
 
-function updateHandMesh(hand, handMeshes, inputSource) {
-    for (let i = 0; i < handMeshes.length; i++) {
-        const jointPose = hand.getJointPose(hand.joints[i], renderer.xr.getReferenceSpace());
-        if (jointPose) {
-            handMeshes[i].position.copy(jointPose.transform.position);
-            handMeshes[i].quaternion.copy(jointPose.transform.orientation);
-        }
+    // hand 2
+    hand2 = renderer.xr.getHand(0);
+    hand2.add(new OculusHandModel(hand2));
+    scene.add(hand2);
+
+    // Inisialisasi trail
+    for (let j = 0; j < 100; j++) {
+        const geometry = new THREE.BoxGeometry(0.005, 0.005, 0.005);
+        trail[j] = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+        trail[j].material.wireframe = true;
+        trail[j].position.set(0, 0, 0);
+        scene.add(trail[j]);
     }
+    i = 0;
 }
 </script>
 
