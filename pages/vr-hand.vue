@@ -58,6 +58,14 @@ onMounted(() => {
     _listener();
     _initScene();
     animate();
+    if ('XRHand' in window) {
+        // XRHand tersedia
+        console.log("XRHand tersedia");
+    } else {
+        console.error("XRHand tidak tersedia di lingkungan ini.");
+    }
+
+    initHands();
 });
 
 function _listener() {
@@ -93,17 +101,6 @@ function _initScene() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
-
-    renderer.xr.onSessionStartedCallback = (session) => {
-
-        // create skelton meshes
-        initHands();
-
-        // get xrRefSpace
-        session.requestReferenceSpace('local').then((refSpace) => {
-            xrRefSpace = refSpace.getOffsetReferenceSpace(new XRRigidTransform({ x: 0, y: 1.5, z: 0 }));
-        });
-    };
 
     // VR
     Container.value.appendChild(renderer.domElement);
@@ -165,7 +162,6 @@ function onMouseClick(event) {
 
     if (intersects.length > 0) {
         const intersectedObject = intersects[0].object;
-        console.log(intersectedObject);
     }
 }
 
