@@ -74,7 +74,6 @@ function _initScene() {
 function animate() {
     renderer.setAnimationLoop(() => {
         const session = renderer.xr.getSession();
-        console.log(handMeshes);
 
         // Pastikan hand tracking berjalan jika sesi ada
         if (session) {
