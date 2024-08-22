@@ -224,19 +224,28 @@ function loadHandsModel() {
             DEFAULT_HAND_PROFILE_PATH,
             'left'
         );
+
+        // Tambahkan ke scene setelah model dimuat
+        scene.add(leftHandMesh);
+    }, undefined, (error) => {
+        console.error('An error occurred while loading the left hand model:', error);
     });
 
     loader.load('/right.glb', (gltf) => {
         const handModel = gltf.scene;
 
-        leftHandMesh = new XRHandMeshModel(
+        rightHandMesh = new XRHandMeshModel(
             handModel,
             controller2,
             DEFAULT_HAND_PROFILE_PATH,
             'right'
         );
-    });
 
+        // Tambahkan ke scene setelah model dimuat
+        scene.add(rightHandMesh);
+    }, undefined, (error) => {
+        console.error('An error occurred while loading the right hand model:', error);
+    });
 }
 
 function animate() {
