@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import * as THREE from 'three';
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -124,6 +124,139 @@ function createHandMesh() {
     }
 
     return handGroup;
+}
+</script>
+
+<template>
+    <div ref="Container"></div>
+</template> -->
+<script setup>
+import * as THREE from 'three';
+import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+import { onMounted, ref } from 'vue';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { XRHandMeshModel } from 'three/examples/jsm/webxr/XRHandMeshModel.js'; // Pastikan path ini benar
+
+const Container = ref(null);
+
+let scene, renderer, camera, controls;
+let room;
+let mouse;
+let raycaster;
+
+let controller1, controller2;
+
+let leftHandModel, rightHandModel;
+const loader = new GLTFLoader()
+onMounted(() => {
+    _listener();
+    _initScene();
+    animate();
+});
+
+function _listener() {
+    raycaster = new THREE.Raycaster();
+    mouse = new THREE.Vector2();
+    window.addEventListener('click', onMouseClick, false);
+}
+
+function _initScene() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x505050);
+
+    // Cahaya
+    scene.add(new THREE.HemisphereLight(0xa5a5a5, 0x898989, 3));
+    const light = new THREE.DirectionalLight(0xffffff, 3);
+    light.position.set(1, 1, 1).normalize();
+    scene.add(light);
+
+    // Kamera
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 10);
+    camera.position.set(0, 1, 3);
+
+    // Ruangan
+    room = new THREE.LineSegments(
+        new BoxLineGeometry(6, 6, 6, 10, 10, 10).translate(0, 3, 0),
+        new THREE.LineBasicMaterial({ color: 0xbcbcbc })
+    );
+    scene.add(room);
+
+    // Renderer
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.xr.enabled = true;
+
+    // VR
+    Container.value.appendChild(renderer.domElement);
+    Container.value.appendChild(VRButton.createButton(renderer));
+
+    // Kontrol orbit
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.target = new THREE.Vector3(0, 1.2, -1);
+    controls.update();
+
+    // XR Controller
+    controller1 = renderer.xr.getController(0); // Tangan kiri
+    controller2 = renderer.xr.getController(1); // Tangan kanan
+
+    // Tambahkan kontroler ke scene
+    scene.add(controller1);
+    scene.add(controller2);
+
+    // Hand Tracking atau Model Tangan
+    createHandModels();;
+}
+
+function animate() {
+    renderer.setAnimationLoop(() => {
+        if (leftHandModel) {
+            console.log(leftHandModel);
+            leftHandModel.updateMesh();
+        }
+        if (rightHandModel) {
+            rightHandModel.updateMesh();
+        }
+        renderer.render(scene, camera);
+    });
+}
+
+function onMouseClick(event) {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(scene.children);
+
+    if (intersects.length > 0) {
+        const intersectedObject = intersects[0].object;
+        // Lakukan sesuatu dengan objek yang terinterseksi
+    }
+}
+
+function createHandModels() {
+    // Muat model tangan
+    loader.load('/left.glb', (gltf) => {
+        const handModel = gltf.scene;
+
+        // Model tangan kiri
+        leftHandModel = new XRHandMeshModel(handModel, renderer.xr.getController(0), '/left.glb', 'left', loader, () => {
+            console.log('Left hand model loaded');
+        });
+        scene.add(leftHandModel);
+    });
+
+    loader.load('/right.glb', (gltf) => {
+        const handModel = gltf.scene;
+
+        // Model tangan kanan
+        rightHandModel = new XRHandMeshModel(handModel, renderer.xr.getController(1), '/right.glb', 'right', loader, () => {
+            console.log('Right hand model loaded');
+        });
+        scene.add(rightHandModel);
+    });
 }
 </script>
 
