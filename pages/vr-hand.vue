@@ -12,8 +12,7 @@ let room;
 let mouse;
 let raycaster;
 let controller1, controller2;
-
-let leftHand, rightHand;
+let hand1, hand2;
 
 onMounted(() => {
     _listener();
@@ -58,38 +57,31 @@ function _initScene() {
     Container.value.appendChild(renderer.domElement);
     Container.value.appendChild(VRButton.createButton(renderer));
 
-    // Tambahkan controller VR
+    // Kontroler atau Hand Tracking
     controller1 = renderer.xr.getController(0);
     controller2 = renderer.xr.getController(1);
     scene.add(controller1);
     scene.add(controller2);
 
+    // Periksa apakah hand tracking didukung
+    if (renderer.xr.isHandTrackingSupported) {
+        hand1 = renderer.xr.getHand(0);
+        hand2 = renderer.xr.getHand(1);
+        scene.add(hand1);
+        scene.add(hand2);
+    } else {
+        // Jika hand tracking tidak didukung, gunakan controller dengan mesh tangan biasa
+        const leftHandMesh = createHandMesh();
+        controller1.add(leftHandMesh);
+
+        const rightHandMesh = createHandMesh();
+        controller2.add(rightHandMesh);
+    }
+
     // Kontrol orbit
     controls = new OrbitControls(camera, renderer.domElement);
-    camera.position.set(0, 1.6, 0);
     controls.target = new THREE.Vector3(0, 1.2, -1);
     controls.update();
-
-    //hand
-    leftHand = createHandMesh();
-    leftHand.position.set(-0.3, 1.5, -0.5);
-    scene.add(leftHand);
-
-    rightHand = createHandMesh();
-    rightHand.position.set(0.3, 1.5, -0.5);
-    scene.add(rightHand);
-
-    // controller 
-    const controller1 = renderer.xr.getController(0);
-    scene.add(controller1);
-    const leftHand = createHandMesh();
-    controller1.add(leftHand);
-
-    const controller2 = renderer.xr.getController(1);
-    scene.add(controller2);
-    const rightHand = createHandMesh();
-    controller2.add(rightHand);
-
 }
 
 function animate() {
@@ -133,7 +125,6 @@ function createHandMesh() {
 
     return handGroup;
 }
-
 </script>
 
 <template>
