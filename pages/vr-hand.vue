@@ -137,7 +137,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { onMounted, ref } from 'vue';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { XRHandMeshModel } from 'three/examples/jsm/webxr/XRHandMeshModel.js'; // Pastikan path ini benar
 
 const Container = ref(null);
 
@@ -147,9 +146,10 @@ let mouse;
 let raycaster;
 
 let controller1, controller2;
+let leftHandMesh, rightHandMesh;
 
-let leftHandModel, rightHandModel;
-const loader = new GLTFLoader()
+const loader = new GLTFLoader();
+
 onMounted(() => {
     _listener();
     _initScene();
@@ -198,7 +198,7 @@ function _initScene() {
     controls.target = new THREE.Vector3(0, 1.2, -1);
     controls.update();
 
-    // XR Controller
+    // Kontroler VR
     controller1 = renderer.xr.getController(0); // Tangan kiri
     controller2 = renderer.xr.getController(1); // Tangan kanan
 
@@ -206,19 +206,13 @@ function _initScene() {
     scene.add(controller1);
     scene.add(controller2);
 
-    // Hand Tracking atau Model Tangan
-    createHandModels();;
+    // Muat model tangan
+    loadHandModels();
 }
 
 function animate() {
     renderer.setAnimationLoop(() => {
-        if (leftHandModel) {
-            console.log(leftHandModel);
-            leftHandModel.updateMesh();
-        }
-        if (rightHandModel) {
-            rightHandModel.updateMesh();
-        }
+        // Jika ada update spesifik yang diperlukan, lakukan di sini
         renderer.render(scene, camera);
     });
 }
@@ -236,28 +230,18 @@ function onMouseClick(event) {
     }
 }
 
-function createHandModels() {
-    // Muat model tangan
+function loadHandModels() {
     loader.load('/left.glb', (gltf) => {
-        const handModel = gltf.scene;
-
-        // Model tangan kiri
-        leftHandModel = new XRHandMeshModel(handModel, renderer.xr.getController(0), '/left.glb', 'left', loader, () => {
-            console.log('Left hand model loaded');
-        });
-        scene.add(leftHandModel);
+        leftHandMesh = gltf.scene;
+        controller1.add(leftHandMesh);
     });
 
     loader.load('/right.glb', (gltf) => {
-        const handModel = gltf.scene;
-
-        // Model tangan kanan
-        rightHandModel = new XRHandMeshModel(handModel, renderer.xr.getController(1), '/right.glb', 'right', loader, () => {
-            console.log('Right hand model loaded');
-        });
-        scene.add(rightHandModel);
+        rightHandMesh = gltf.scene;
+        controller2.add(rightHandMesh);
     });
 }
+
 </script>
 
 <template>
