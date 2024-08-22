@@ -193,8 +193,12 @@ function _initScene() {
     renderer.xr.enabled = true;
 
     // VR
+    const sessionInit = {
+        requiredFeatures: ['hand-tracking']
+    };
+
     Container.value.appendChild(renderer.domElement);
-    Container.value.appendChild(VRButton.createButton(renderer));
+    Container.value.appendChild(VRButton.createButton(renderer, sessionInit));
 
     // Kontrol orbit
     controls = new OrbitControls(camera, renderer.domElement);
