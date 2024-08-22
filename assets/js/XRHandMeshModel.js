@@ -16,7 +16,6 @@ class XRHandMeshModel {
 			loader.setPath( path || DEFAULT_HAND_PROFILE_PATH );
 
 		}
-        console.log(handedness)
 		loader.load( `${handedness}.glb`, gltf => {
 
 			const object = gltf.scene.children[ 0 ];

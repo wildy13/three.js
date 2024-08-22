@@ -231,7 +231,7 @@ function loadHandsModel() {
 
         leftHandMesh = new XRHandMeshModel(
             handModel,
-            controller1,
+            controller2,
             DEFAULT_HAND_PROFILE_PATH,
             'right'
         );
