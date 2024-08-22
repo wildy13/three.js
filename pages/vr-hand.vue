@@ -137,8 +137,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { onMounted, ref } from 'vue';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { OculusHandModel } from 'three/examples/jsm/webxr/OculusHandModel.js';
-import { XRHandMeshModel } from '../assets/js/XRHandMeshModel.js';
+import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
+import { OculusHandModel } from 'three/addons/webxr/OculusHandModel.js';
+import { OculusHandPointerModel } from 'three/addons/webxr/OculusHandPointerModel.js';
 
 const Container = ref(null);
 
@@ -204,12 +205,35 @@ function _initScene() {
     controller1 = renderer.xr.getController(0); // Tangan kiri
     controller2 = renderer.xr.getController(1); // Tangan kanan
 
+    const controllerModelFactory = new XRControllerModelFactory();
+
+    // Hand 1
+    const controllerGrip1 = renderer.xr.getControllerGrip(0);
+    controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+    scene.add(controllerGrip1);
+
+    const hand1 = renderer.xr.getHand(0);
+    hand1.add(new OculusHandModel(hand1));
+    const handPointer1 = new OculusHandPointerModel(hand1, controller1);
+    hand1.add(handPointer1);
+
+    scene.add(hand1);
+
+    // Hand 2
+    const controllerGrip2 = renderer.xr.getControllerGrip(1);
+    controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+    scene.add(controllerGrip2);
+
+    const hand2 = renderer.xr.getHand(1);
+    hand2.add(new OculusHandModel(hand2));
+    const handPointer2 = new OculusHandPointerModel(hand2, controller2);
+    hand2.add(handPointer2);
+    scene.add(hand2);
+
     // Tambahkan kontroler ke scene
     scene.add(controller1);
     scene.add(controller2);
 
-    // Muat model tangan
-    loadHandsModel();
 }
 
 function loadHandsModel() {
