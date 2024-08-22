@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import { OculusHandModel } from 'three/examples/jsm/webxr/OculusHandModel.js';
 import { onMounted, ref } from 'vue';
 
 const Container = ref(null);
@@ -14,14 +13,11 @@ let mouse;
 let raycaster;
 let controller1, controller2;
 
-let hand1, hand2;
-let trail = []; // Inisialisasi trail sebagai array kosong
-let i;
+let leftHand, rightHand;
 
 onMounted(() => {
     _listener();
     _initScene();
-    _hand();
     animate();
 });
 
@@ -73,23 +69,31 @@ function _initScene() {
     camera.position.set(0, 1.6, 0);
     controls.target = new THREE.Vector3(0, 1.2, -1);
     controls.update();
+
+    //hand
+    leftHand = createHandMesh();
+    leftHand.position.set(-0.3, 1.5, -0.5);
+    scene.add(leftHand);
+
+    rightHand = createHandMesh();
+    rightHand.position.set(0.3, 1.5, -0.5);
+    scene.add(rightHand);
+
+    // controller 
+    controller1 = renderer.xr.getController(0);
+    controller1.add(leftHand);
+    scene.add(controller1);
+
+    controller2 = renderer.xr.getController(1);
+    controller2.add(rightHand);
+    scene.add(controller2);
+
+
 }
 
 function animate() {
     renderer.setAnimationLoop(() => {
         renderer.render(scene, camera);
-
-        // Periksa jika hand1 dan trail[i] sudah didefinisikan
-        if (hand1 && hand1.joints && hand1.joints['index-finger-tip'] && trail[i]) {
-            const jointPosition = hand1.joints['index-finger-tip'].position;
-            if (jointPosition) {
-                trail[i].position.copy(jointPosition);
-                i++;
-                if (i > 99) {
-                    i = 0;
-                }
-            }
-        }
     });
 }
 
@@ -106,27 +110,29 @@ function onMouseClick(event) {
     }
 }
 
-function _hand() {
-    // hand 1
-    hand1 = renderer.xr.getHand(1);
-    hand1.add(new OculusHandModel(hand1));
-    scene.add(hand1);
+function createHandMesh() {
+    const handGroup = new THREE.Group(); // Grup untuk menampung bagian tangan
 
-    // hand 2
-    hand2 = renderer.xr.getHand(0);
-    hand2.add(new OculusHandModel(hand2));
-    scene.add(hand2);
+    // Membuat telapak tangan
+    const palmGeometry = new THREE.BoxGeometry(0.1, 0.02, 0.2);
+    const palmMaterial = new THREE.MeshStandardMaterial({ color: 0x8f8f8f });
+    const palmMesh = new THREE.Mesh(palmGeometry, palmMaterial);
+    handGroup.add(palmMesh);
 
-    // Inisialisasi trail
-    for (let j = 0; j < 100; j++) {
-        const geometry = new THREE.BoxGeometry(0.005, 0.005, 0.005);
-        trail[j] = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
-        trail[j].material.wireframe = true;
-        trail[j].position.set(0, 0, 0);
-        scene.add(trail[j]);
+    // Membuat jari-jari
+    const fingerGeometry = new THREE.CylinderGeometry(0.01, 0.01, 0.1, 32);
+    const fingerMaterial = new THREE.MeshStandardMaterial({ color: 0x8f8f8f });
+
+    for (let i = 0; i < 5; i++) {
+        const fingerMesh = new THREE.Mesh(fingerGeometry, fingerMaterial);
+        fingerMesh.position.set(-0.04 + i * 0.02, 0.06, -0.05);
+        fingerMesh.rotation.x = Math.PI / 2;
+        handGroup.add(fingerMesh);
     }
-    i = 0;
+
+    return handGroup;
 }
+
 </script>
 
 <template>
