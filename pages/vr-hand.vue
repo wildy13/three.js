@@ -80,14 +80,15 @@ function _initScene() {
     scene.add(rightHand);
 
     // controller 
-    controller1 = renderer.xr.getController(0);
-    controller1.add(leftHand);
+    const controller1 = renderer.xr.getController(0);
     scene.add(controller1);
+    const leftHand = createHandMesh();
+    controller1.add(leftHand);
 
-    controller2 = renderer.xr.getController(1);
-    controller2.add(rightHand);
+    const controller2 = renderer.xr.getController(1);
     scene.add(controller2);
-
+    const rightHand = createHandMesh();
+    controller2.add(rightHand);
 
 }
 
