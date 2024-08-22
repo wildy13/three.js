@@ -138,6 +138,7 @@ import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { onMounted, ref } from 'vue';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OculusHandModel } from 'three/examples/jsm/webxr/OculusHandModel.js';
+import { XRHandMeshModel } from '../assets/js/XRHandMeshModel.js';
 
 const Container = ref(null);
 
@@ -208,11 +209,34 @@ function _initScene() {
     scene.add(controller2);
 
     // Muat model tangan
-    const handModelLeft = new OculusHandModel(controller1, loader, ()=> { console.log('left created')});
-    const handModelRight = new OculusHandModel(controller2, loader, ()=> { console.log('right created')});
+    loadHandsModel();
+}
 
-    scene.add(handModelLeft);
-    scene.add(handModelRight)
+function loadHandsModel() {
+    const DEFAULT_HAND_PROFILE_PATH = 'https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles/generic-hand/';
+
+    loader.load('/left.glb', (gltf) => {
+        const handModel = gltf.scene;
+
+        leftHandMesh = new XRHandMeshModel(
+            handModel,
+            controller1,
+            DEFAULT_HAND_PROFILE_PATH,
+            'left'
+        );
+    });
+
+    loader.load('/right.glb', (gltf) => {
+        const handModel = gltf.scene;
+
+        leftHandMesh = new XRHandMeshModel(
+            handModel,
+            controller1,
+            DEFAULT_HAND_PROFILE_PATH,
+            'right'
+        );
+    });
+
 }
 
 function animate() {
