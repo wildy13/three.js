@@ -137,6 +137,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { onMounted, ref } from 'vue';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OculusHandModel } from 'three/examples/jsm/webxr/OculusHandModel.js';
 
 const Container = ref(null);
 
@@ -207,12 +208,15 @@ function _initScene() {
     scene.add(controller2);
 
     // Muat model tangan
-    loadHandModels();
+    const handModelLeft = new OculusHandModel(controller1, loader, ()=> { console.log('left created')});
+    const handModelRight = new OculusHandModel(controller2, loader, ()=> { console.log('right created')});
+
+    scene.add(handModelLeft);
+    scene.add(handModelRight)
 }
 
 function animate() {
     renderer.setAnimationLoop(() => {
-        // Jika ada update spesifik yang diperlukan, lakukan di sini
         renderer.render(scene, camera);
     });
 }
@@ -230,17 +234,6 @@ function onMouseClick(event) {
     }
 }
 
-function loadHandModels() {
-    loader.load('/left.glb', (gltf) => {
-        leftHandMesh = gltf.scene;
-        controller1.add(leftHandMesh);
-    });
-
-    loader.load('/right.glb', (gltf) => {
-        rightHandMesh = gltf.scene;
-        controller2.add(rightHandMesh);
-    });
-}
 
 </script>
 
