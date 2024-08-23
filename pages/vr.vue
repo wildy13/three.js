@@ -8,25 +8,29 @@ import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFa
 import { OculusHandModel } from 'three/addons/webxr/OculusHandModel.js';
 import { OculusHandPointerModel } from 'three/addons/webxr/OculusHandPointerModel.js';
 
+
 const Container = ref(null);
 
 let scene, renderer, camera, controls;
 let room;
+let mouse;
 let raycaster;
 
 let controller1, controller2;
+
+let intersectedObject = null;
 let isDragging = false;
-let selectedObject = null;
+let initialPosition = new THREE.Vector3();
+let dragOffset = new THREE.Vector3();
+
+
+raycaster = new THREE.Raycaster();
 
 onMounted(() => {
-    _listener();
     _initScene();
     animate();
 });
 
-function _listener() {
-    raycaster = new THREE.Raycaster();
-}
 
 function _initScene() {
     scene = new THREE.Scene();
@@ -72,6 +76,9 @@ function _initScene() {
     controller1 = renderer.xr.getController(0); // Tangan kiri
     controller2 = renderer.xr.getController(1); // Tangan kanan
 
+    controller1.addEventListener('selectstart', _selectStart);
+    controller1.addEventListener('selectend', _selectEnd);
+
     const controllerModelFactory = new XRControllerModelFactory();
 
     // Hand 1
@@ -110,52 +117,66 @@ function _initScene() {
 
     for (let i = 0; i < cubeCount; i++) {
         const cube = new THREE.Mesh(geometry, material);
-        cube.position.set(i * distance - (distance * (cubeCount - 1)) / 2, 2, 0);
+        cube.position.set(i * distance - (distance * (cubeCount - 1)) / 2, 1, 0);
         cube.scale.set(0.25, 0.25, 0.25);
         scene.add(cube);
     }
+
 }
+function update() {
+    // Update raycaster with controller1 position
+    raycaster.ray.origin.setFromMatrixPosition(controller1.matrixWorld);
+    raycaster.ray.direction.set(0, 0, -1).applyMatrix4(controller1.matrixWorld);
 
-function animate() {
-    renderer.setAnimationLoop(() => {
-        handleVRControllers(controller1);
-        handleVRControllers(controller2);
-        renderer.render(scene, camera);
-    });
-}
+    // Raycast to detect intersected objects with controller1
+    const intersects1 = raycaster.intersectObjects(scene.children);
 
-function handleVRControllers(controller) {
-    const tempMatrix = new THREE.Matrix4();
-    controller.updateMatrixWorld();
-    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
-    raycaster.ray.direction.set(0, -1, -1).applyMatrix4(tempMatrix);
+    // Update raycaster with controller2 position
+    raycaster.ray.origin.setFromMatrixPosition(controller2.matrixWorld);
+    raycaster.ray.direction.set(0, 0, -1).applyMatrix4(controller2.matrixWorld);
 
-    const intersects = raycaster.intersectObjects(scene.children);
+    // Raycast to detect intersected objects with controller2
+    const intersects2 = raycaster.intersectObjects(scene.children);
 
-    if (intersects.length > 0) {
-        const intersectedObject = intersects[0].object;
+    // Handle intersections with controller1
+    if (intersects1.length > 0) {
+        intersectedObject = intersects1[0].object;
+    }
 
-        if (controller === controller1 && !isDragging) {
-            isDragging = true;
-            selectedObject = intersectedObject;
-        } else if (controller === controller2 && !isDragging) {
-            isDragging = true;
-            selectedObject = intersectedObject;
-        }
+    // Handle intersections with controller2
+    if (intersects2.length > 0) {
+        intersectedObject = intersects2[0].object;
+    }
 
-        if (isDragging && selectedObject) {
-            // Update posisi objek berdasarkan posisi controller
-            selectedObject.position.copy(raycaster.ray.origin);
-            selectedObject.position.y = 1; // Menjaga posisi pada sumbu Y
-        }
-    } else if (isDragging) {
-        isDragging = false;
-        selectedObject = null;
+    // Update object position if dragging
+    if (isDragging && intersectedObject) {
+        const intersection = raycaster.intersectObject(intersectedObject)[0];
+        intersectedObject.position.copy(intersection.point).add(dragOffset);
     }
 }
 
-function onMouseClick(event) {
-    // Implementasi klik mouse jika diperlukan
+
+function _selectStart(event) {
+    isDragging = true;
+    if (intersectedObject) {
+        intersectedObject.updateMatrixWorld();
+        const intersection = raycaster.intersectObject(intersectedObject)[0];
+        initialPosition.copy(intersectedObject.position);
+        dragOffset.subVectors(intersection.point, intersectedObject.position);
+    }
+}
+
+function _selectEnd(event) {
+    isDragging = false;
+    intersectedObject = null;
+}
+
+
+function animate() {
+    renderer.setAnimationLoop(() => {
+        update();
+        renderer.render(scene, camera);
+    });
 }
 
 </script>
