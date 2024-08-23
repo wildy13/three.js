@@ -78,6 +78,8 @@ function _initScene() {
 
     controller1.addEventListener('selectstart', _selectStart);
     controller1.addEventListener('selectend', _selectEnd);
+    controller2.addEventListener('selectstart', _selectStart);
+    controller2.addEventListener('selectend', _selectEnd);
 
     const controllerModelFactory = new XRControllerModelFactory();
 
