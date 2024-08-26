@@ -7,7 +7,6 @@ import * as ThreeMeshUI from 'three-mesh-ui';
 import Backspace from 'three-mesh-ui/examples/assets/backspace.png';
 import Enter from 'three-mesh-ui/examples/assets/enter.png';
 import Shift from 'three-mesh-ui/examples/assets/shift.png';
-import VRControl from '../assets/js/VRControl';
 import { onMounted, ref } from 'vue';
 
 const Container = ref(null);
