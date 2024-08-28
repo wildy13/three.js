@@ -34,12 +34,12 @@ const createHand = (scene, renderer, camera, index) => {
     scene.add(controllerGrip2);
 
     const left = renderer.xr.getHand(0);
-    left.add(new OculusHandModel(hand));
+    left.add(new OculusHandModel(left));
     const handPointer1 = new OculusHandPointerModel(left, controller1);
     left.add(handPointer1);
 
     const right = renderer.xr.getHand(0);
-    right.add(new OculusHandModel(hand));
+    right.add(new OculusHandModel(right));
     const handPointer2 = new OculusHandPointerModel(right, controller2);
     right.add(handPointer2);
 
