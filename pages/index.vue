@@ -6,6 +6,7 @@
             <NuxtLink to="/ar-hittest"  class="p-2 bg-slate-500 rounded-lg text-slate-100"> AR Hittest</NuxtLink>.
             <NuxtLink to="/vr-keyboard"  class="p-2 bg-slate-500 rounded-lg text-slate-100"> VR Keyboard</NuxtLink>
             <NuxtLink to="/vr-hand"  class="p-2 bg-slate-500 rounded-lg text-slate-100"> VR hand</NuxtLink>
+            <NuxtLink to="/vr-draggable"  class="p-2 bg-slate-500 rounded-lg text-slate-100"> VR Draggable</NuxtLink>
         </div>
     </div>
 </template>
