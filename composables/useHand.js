@@ -46,7 +46,8 @@ const createHand = (scene, renderer, camera, index) => {
 
     register(controllerGrip1, controllerGrip2, handPointer1, handPointer2, renderer, camera)
 
-    scene.add(hand);
+    scene.add(left);
+    scene.add(right);
 }
 
 const update = (renderer, camera) => {
