@@ -7,7 +7,6 @@ export const useTemplate = () => {
     let initScene, initRenderer, initCamera, initControls;
     let initRoom;
     let initRaycaster;
-    let initControler1, initController2;
 
     // raycaster
 
@@ -45,13 +44,6 @@ export const useTemplate = () => {
     initControls.target = new THREE.Vector3(0, 1.2, -1);
     initControls.update();
 
-    // Kontroler VR
-    initControler1 = initRenderer.xr.getController(0); // Tangan kiri
-    initController2 = initRenderer.xr.getController(1); // Tangan kanan
-
-    initScene.add(initControler1);
-    initScene.add(initController2);
-
 
     function _create(Container) {
         // VR
@@ -72,7 +64,5 @@ export const useTemplate = () => {
         initControls,
         initRoom,
         initRaycaster,
-        initControler1,
-        initController2
     }
 }
