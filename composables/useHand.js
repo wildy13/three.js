@@ -21,20 +21,30 @@ export const useHand = (renderer, scene, camera) => {
 const createHand = (scene, renderer, camera, index) => {
     const controllerModelFactory = new XRControllerModelFactory();
 
-    const controller = renderer.xr.getController(index);
-    scene.add(controller);
+    const controller1 = renderer.xr.getController(0);
+    scene.add(controller1);
+    const controller2 = renderer.xr.getController(1);
+    scene.add(controller2);
 
-    const controllerGrip = renderer.xr.getControllerGrip(index);
-    controllerGrip.add(controllerModelFactory.createControllerModel(controllerGrip));
-    scene.add(controllerGrip);
+    const controllerGrip1 = renderer.xr.getControllerGrip(0);
+    controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+    scene.add(controllerGrip1);
+    const controllerGrip2 = renderer.xr.getControllerGrip(1);
+    controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+    scene.add(controllerGrip2);
 
-    const hand = renderer.xr.getHand(index);
-    hand.add(new OculusHandModel(hand));
-    const handPointer = new OculusHandPointerModel(hand, controller);
-    hand.add(handPointer);
+    const left = renderer.xr.getHand(0);
+    left.add(new OculusHandModel(hand));
+    const handPointer1 = new OculusHandPointerModel(left, controller1);
+    left.add(handPointer1);
+
+    const right = renderer.xr.getHand(0);
+    right.add(new OculusHandModel(hand));
+    const handPointer2 = new OculusHandPointerModel(right, controller2);
+    right.add(handPointer2);
 
 
-    register(controllerGrip, handPointer, renderer, camera)
+    register(controllerGrip1, controllerGrip2, handPointer1, handPointer2, renderer, camera)
 
     scene.add(hand);
 }
@@ -42,11 +52,11 @@ const createHand = (scene, renderer, camera, index) => {
 const update = (renderer, camera) => {
     const delta = clock.getDelta();
     const elapsedTime = clock.elapsedTime;
-    world.execute( delta, elapsedTime );
+    world.execute(delta, elapsedTime);
     renderer.xr.updateCamera(camera);
 }
 
-const register = (controllerGrip, handPointer, renderer, camera) => {
+const register = (controllerGrip1, controllerGrip2, handPointer1, handPointer2, renderer, camera) => {
     world = new World();
 
     world
@@ -61,11 +71,11 @@ const register = (controllerGrip, handPointer, renderer, camera) => {
 
     world
         .registerSystem(RandomizerSystem)
-        .registerSystem(InstructionSystem, { controllers: [controllerGrip] })
+        .registerSystem(InstructionSystem, { controllers: [controllerGrip1, controllerGrip2] })
         .registerSystem(CalibrationSystem, { renderer: renderer, camera: camera })
         .registerSystem(ButtonSystem)
         .registerSystem(DraggableSystem)
-        .registerSystem(HandRaySystem, { handPointers: [handPointer] });
+        .registerSystem(HandRaySystem, { handPointers: [handPointer1, handPointer2] });
 }
 
 const objectEntity = (object) => {
