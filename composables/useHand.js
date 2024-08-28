@@ -28,7 +28,7 @@ const createHand = (scene, renderer, camera, index) => {
     controllerGrip.add(controllerModelFactory.createControllerModel(controllerGrip));
     scene.add(controllerGrip);
 
-    const hand = renderer.xr.getHand(0);
+    const hand = renderer.xr.getHand(index);
     hand.add(new OculusHandModel(hand));
     const handPointer = new OculusHandPointerModel(hand, controller);
     hand.add(handPointer);
