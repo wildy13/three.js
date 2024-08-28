@@ -8,17 +8,15 @@ let world, clock;
 export const useHand = (renderer, scene, camera) => {
     clock = new THREE.Clock();
 
-    const left = createHand(scene, renderer, camera, 0);
-    const right = createHand(scene, renderer, camera, 1);
+    createHand();
+    
     return {
-        left,
-        right,
         objectEntity,
         update
     }
 }
 
-const createHand = (scene, renderer, camera, index) => {
+const createHand = (scene, renderer, camera) => {
     const controllerModelFactory = new XRControllerModelFactory();
 
     const controller1 = renderer.xr.getController(0);
@@ -38,7 +36,7 @@ const createHand = (scene, renderer, camera, index) => {
     const handPointer1 = new OculusHandPointerModel(left, controller1);
     left.add(handPointer1);
 
-    const right = renderer.xr.getHand(0);
+    const right = renderer.xr.getHand(1);
     right.add(new OculusHandModel(right));
     const handPointer2 = new OculusHandPointerModel(right, controller2);
     right.add(handPointer2);
