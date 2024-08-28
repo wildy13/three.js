@@ -8,8 +8,8 @@ let world, clock;
 export const useHand = (renderer, scene, camera) => {
     clock = new THREE.Clock();
 
-    createHand();
-    
+    createHand(scene, renderer, camera);
+
     return {
         objectEntity,
         update
